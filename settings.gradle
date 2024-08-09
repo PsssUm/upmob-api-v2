@@ -1,0 +1,2 @@
+include ':app', ':upmob'
+rootProject.name='Test sdk'
