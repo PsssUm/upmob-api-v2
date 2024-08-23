@@ -15,9 +15,9 @@ import android.webkit.*
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
-import br.com.onimur.handlepathoz.HandlePathOz
-import br.com.onimur.handlepathoz.HandlePathOzListener
-import br.com.onimur.handlepathoz.model.PathOz
+//import br.com.onimur.handlepathoz.HandlePathOz
+//import br.com.onimur.handlepathoz.HandlePathOzListener
+//import br.com.onimur.handlepathoz.model.PathOz
 import com.google.android.play.core.review.ReviewManagerFactory
 import java.io.File
 import java.io.FileNotFoundException
@@ -26,7 +26,7 @@ import java.io.FileNotFoundException
 class UpmobWebviewActivity : AppCompatActivity() {
     private lateinit var webInterFace : WebAppInterface
     private val SELECT_PHOTO = 1
-    private lateinit var handlePathOz: HandlePathOz
+//    private lateinit var handlePathOz: HandlePathOz
     private lateinit var webview : WebView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,15 +48,15 @@ class UpmobWebviewActivity : AppCompatActivity() {
         webInterFace = WebAppInterface(this)
         webview.addJavascriptInterface(webInterFace, "Android")
         webSettings.javaScriptCanOpenWindowsAutomatically = false
-        handlePathOz = HandlePathOz(this, object : HandlePathOzListener.SingleUri{
-            override fun onRequestHandlePathOz(pathOz: PathOz, tr: Throwable?) {
-                val file = File(pathOz.path)
-                val value: String = Base64.encodeToString(file.readBytes(), Base64.DEFAULT)
-                runOnUiThread {
-                    webview.loadUrl("javascript:handleImage('data:image/png;base64,${value}')")
-                }
-            }
-        })
+//        handlePathOz = HandlePathOz(this, object : HandlePathOzListener.SingleUri{
+//            override fun onRequestHandlePathOz(pathOz: PathOz, tr: Throwable?) {
+//                val file = File(pathOz.path)
+//                val value: String = Base64.encodeToString(file.readBytes(), Base64.DEFAULT)
+//                runOnUiThread {
+//                    webview.loadUrl("javascript:handleImage('data:image/png;base64,${value}')")
+//                }
+//            }
+//        })
 
     }
 
@@ -68,7 +68,7 @@ class UpmobWebviewActivity : AppCompatActivity() {
                 val imageUri: Uri? = data?.data
                 imageUri?.let {
                     //webview.loadUrl("javascript:onResume()")
-                    handlePathOz.getRealPath(imageUri)
+                    //handlePathOz.getRealPath(imageUri)
                 }
 
             } catch (e: FileNotFoundException) {
@@ -82,6 +82,7 @@ class UpmobWebviewActivity : AppCompatActivity() {
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         webInterFace.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
     class WebAppInterface internal constructor(c: Activity) {
