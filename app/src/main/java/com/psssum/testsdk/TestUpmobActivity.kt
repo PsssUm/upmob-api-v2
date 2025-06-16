@@ -1,32 +1,32 @@
-package com.psssum.upmob
+package com.psssum.testsdk
 
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.*
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.util.Base64
+import android.preference.PreferenceManager
 import android.util.Log
 import android.view.animation.DecelerateInterpolator
-import android.webkit.*
+import android.webkit.JavascriptInterface
+import android.webkit.WebSettings
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.preference.PreferenceManager
-//import br.com.onimur.handlepathoz.HandlePathOz
-//import br.com.onimur.handlepathoz.HandlePathOzListener
-//import br.com.onimur.handlepathoz.model.PathOz
-import com.google.android.play.core.review.ReviewManagerFactory
-import java.io.File
 import java.io.FileNotFoundException
 
 
-class UpmobWebviewActivity : AppCompatActivity() {
+class TestUpmobActivity : AppCompatActivity() {
     private lateinit var webInterFace : WebAppInterface
     private val SELECT_PHOTO = 1
-//    private lateinit var handlePathOz: HandlePathOz
+    //    private lateinit var handlePathOz: HandlePathOz
     private lateinit var webview : WebView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,8 +38,10 @@ class UpmobWebviewActivity : AppCompatActivity() {
         val api_key = intent.getStringExtra(Constants.API_KEY)
         val uniq_user_id = intent.getStringExtra(Constants.USER_ID)
         webview = findViewById<WebView>(R.id.webview)
-        //webview.loadUrl("https://app-coins.ru/tasks?device_id=gsagasdag23g2gewag&token_google=eyJhbGciOiJSUzI1NiIsImtpZCI6ImNiNDA0MzgzODQ0YjQ2MzEyNzY5YmI5MjllY2VjNTdkMGFkOGUzYmIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiI3OTIzNjc1MDQyMjctOTY1YWU0b2VlMXBmOWxqNWhnMmxmb2RqdTZlZGpnZzUuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiI3OTIzNjc1MDQyMjctMjYzNWhtaDZxZjQ0NmZpNGJrcGxscDQ0YjNmMm9waTAuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMDAwOTkxOTk4Mzg0NTczMTk2OTUiLCJlbWFpbCI6ImJ1bXMzMjMwQGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJuYW1lIjoi0JLQsNGB0LjQu9C40Lkg0J_QtdGC0YDQvtCyIiwicGljdHVyZSI6Imh0dHBzOi8vbGg1Lmdvb2dsZXVzZXJjb250ZW50LmNvbS8tbmJYeHI2THJhNk0vQUFBQUFBQUFBQUkvQUFBQUFBQUFBQUEvQUtGMDVuQjlod2k4NHRNbWgzXzNTM1FPMk1TazNVODJIUS9zOTYtYy9waG90by5qcGciLCJnaXZlbl9uYW1lIjoi0JLQsNGB0LjQu9C40LkiLCJmYW1pbHlfbmFtZSI6ItCf0LXRgtGA0L7QsiIsImxvY2FsZSI6InJ1IiwiaWF0IjoxNTg0MDIxNjEwLCJleHAiOjE1ODQwMjUyMTB9.TRaTRz6NUKyfkNhTs6kWoeGSw3-5uh1Lke6WYT4JNDZnrXN4ylsyV8IOh6zSZQrqTtejdUOImITS19qV3IZ4clmttcb8pV90GSOiOGl86ohvtC3zKDdU_4wJo5xwnv2gywCIEi-SCKyHMzSrP9NMnUIHWVLyWqJKvaUFi5BQWoCAd5BiUc4pGlOfbIaN7vxpZsB4gS6BQj_u0XgDL8bsdvLLVL1fCOaQ-Qky_fxn6q-XiEQoYQEHrATW1WsrblJkQJsjmhzv4mYjv-UB19rdenijPKcK_sGgUxbPIe7RK7T5OwXm1e7VZamBYUuh4YiPdfanel_z8LOgvgrjUUCTxw")
-        webview.loadUrl("https://app-coins.ru/tasks?device_id=$device_id&token_google=$token&api_key=$api_key&uniq_user_id=$uniq_user_id&testReactJS=1&bundle=${applicationContext.packageName}&webview_fits=true")
+        webview.loadUrl("https://app-coins.ru/?google_user_id=115617333779596885662&device_id=cec6222f97c593cf&api_key=smoozi")
+
+//        webview.loadUrl("https://app-coins.ru/tasks?device_id=gsagasdag23g2gewag&token_google=eyJhbGciOiJSUzI1NiIsImtpZCI6ImFiODYxNGZmNjI4OTNiYWRjZTVhYTc5YTc3MDNiNTk2NjY1ZDI0NzgiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiI3OTIzNjc1MDQyMjctc2NiMGhsajhzYzFnc2tvZnRub3ZjdDFyNWRwa3ZmMG4uYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiI3OTIzNjc1MDQyMjctMjYzNWhtaDZxZjQ0NmZpNGJrcGxscDQ0YjNmMm9waTAuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMTU2MTczMzM3Nzk1OTY4ODU2NjIiLCJlbWFpbCI6ImR1ZmxydUBnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwibmFtZSI6Ik1vdW50YWluIEhlYWRzIiwicGljdHVyZSI6Imh0dHBzOi8vbGgzLmdvb2dsZXVzZXJjb250ZW50LmNvbS9hL0FDZzhvY0xNQUVwZ01DQnVmR2RNS2Y1LTludjUzb3NoMEtFMnN0aDMxbXA3aTJ2SmsxSU13UmpaMnc9czk2LWMiLCJnaXZlbl9uYW1lIjoiTW91bnRhaW4iLCJmYW1pbHlfbmFtZSI6IkhlYWRzIiwiaWF0IjoxNzM1NDg0NTIxLCJleHAiOjE3MzU0ODgxMjF9.pc8fVLg3G8o2OsEAxHBUywzGSbnFluQPlHDQhTyHVXXNQahlsVQXtOCAz8XX7uLPmLww3xobsFadh2HenVQXjUfE7TjEA0zRbYkNrLv3V0G9kbKy9vuoV67tfNxF_xG1dq1X7z9PjxwThWe1K5WdmQQmJQc-P6FhAnj6j2TfUKQzWh2hsgS0XTxbZTfxWupE99Ci1zLqR_fq9NflW3ZdFEirMQ2twxOo_YYTtWdUfw6IhpzOIVaFXUzS8iKHvUq8D570BFQZ84JaMSVdd_mPdQph2JJBZy2sl9mJV3kHXBe07smV-eHivvf2ckkOktC_udMaKsYBiGyHT2wrylGFPw")
+//        webview.loadUrl("https://app-coins.ru/tasks?device_id=$device_id&token_google=$token&api_key=$api_key&uniq_user_id=$uniq_user_id&testReactJS=1&bundle=${applicationContext.packageName}")
         val webSettings: WebSettings = webview.getSettings()
         webSettings.javaScriptEnabled = true
         webSettings.domStorageEnabled = true
@@ -102,8 +104,8 @@ class UpmobWebviewActivity : AppCompatActivity() {
                     }
                     return
                 } else -> {
-                    // Ignore all other requests.
-                }
+                // Ignore all other requests.
+            }
             }
         }
         @JavascriptInterface
@@ -172,21 +174,21 @@ class UpmobWebviewActivity : AppCompatActivity() {
         }
         @JavascriptInterface
         fun showReviewDialog() {
-            if (!isRated(mContext)) {
-                setRated(mContext)
-                val manager = ReviewManagerFactory.create(mContext)
-                //val manager = FakeReviewManager(requireContext()) //TEST MODE!!!
-                val request = manager.requestReviewFlow()
-                request.addOnCompleteListener { r ->
-                    if (r.isSuccessful) {
-                        val reviewInfo = r.result
-                        val flow = manager.launchReviewFlow(mContext, reviewInfo)
-                        flow.addOnCompleteListener { _ ->
-
-                        }
-                    }
-                }
-            }
+//            if (!isRated(mContext)) {
+//                setRated(mContext)
+//                val manager = ReviewManagerFactory.create(mContext)
+//                //val manager = FakeReviewManager(requireContext()) //TEST MODE!!!
+//                val request = manager.requestReviewFlow()
+//                request.addOnCompleteListener { r ->
+//                    if (r.isSuccessful) {
+//                        val reviewInfo = r.result
+//                        val flow = manager.launchReviewFlow(mContext, reviewInfo)
+//                        flow.addOnCompleteListener { _ ->
+//
+//                        }
+//                    }
+//                }
+//            }
         }
         private val IS_RATE = "IS_RATE"
         fun isRated(ctx: Context?): Boolean {
