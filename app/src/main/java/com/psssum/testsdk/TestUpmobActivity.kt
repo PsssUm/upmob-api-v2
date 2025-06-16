@@ -13,6 +13,8 @@ import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.util.Log
+import android.view.View
+import android.view.WindowInsetsController
 import android.view.animation.DecelerateInterpolator
 import android.webkit.JavascriptInterface
 import android.webkit.WebSettings
@@ -33,6 +35,17 @@ class TestUpmobActivity : AppCompatActivity() {
         setAnimation()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_webview_layout)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            window.insetsController?.setSystemBarsAppearance(
+                WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
+                WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+            )
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            @Suppress("DEPRECATION")
+            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        }
+
         val token = intent.getStringExtra(Constants.TOKEN)
         val device_id = intent.getStringExtra(Constants.DEVICE_ID)
         val api_key = intent.getStringExtra(Constants.API_KEY)
