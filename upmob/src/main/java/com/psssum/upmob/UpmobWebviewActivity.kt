@@ -28,6 +28,8 @@ class UpmobWebviewActivity : AppCompatActivity() {
     private val SELECT_PHOTO = 1
 //    private lateinit var handlePathOz: HandlePathOz
     private lateinit var webview : WebView
+    // выбор файла для <input type="file"> (скриншоты к заданиям); прежний checkPickPhoto остаётся
+    private val fileChooser = FileChooser(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setAnimation()
@@ -45,6 +47,7 @@ class UpmobWebviewActivity : AppCompatActivity() {
         webSettings.domStorageEnabled = true
 
         webview.webViewClient = MyWebViewClient()
+        webview.webChromeClient = fileChooser.client
         webInterFace = WebAppInterface(this)
         webview.addJavascriptInterface(webInterFace, "Android")
         webSettings.javaScriptCanOpenWindowsAutomatically = false
@@ -63,6 +66,7 @@ class UpmobWebviewActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        if (fileChooser.onActivityResult(requestCode, resultCode, data)) return
         if (requestCode == SELECT_PHOTO) {
             try {
                 val imageUri: Uri? = data?.data
